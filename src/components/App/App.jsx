@@ -1,13 +1,16 @@
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
 import { Searchbar } from "components/Searchbar/Searchbar";
 import { Component } from "react";
-import { getImages } from '../../services/ApiService'
+import { getImagesApi } from '../../services/ApiService'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import Loader from "components/Loader/Loader";
 import Button from "components/Button/Button";
+import Container from './App.styled';
+
+
 
 export class App extends Component {
   state = {
@@ -16,8 +19,8 @@ export class App extends Component {
     page: 1,  
     totalPages: null,
     loading: false,
-    selectedImg: null,
-    modalImgAlt: '',
+    // selectedImg: null,
+    // modalImgAlt: '',
   };
 
   simpleLightbox = () => {
@@ -30,11 +33,16 @@ export class App extends Component {
 
   async componentDidUpdate(_, prevState) {
     const { query, page, totalPages, images } = this.state;
-    this.simpleLightbox();      
+    this.simpleLightbox(); 
+    console.log('prevState.page: ', prevState.page);
+    console.log('this.state.page: ', this.state.page);
+
+    console.log('prevState.query: ', prevState.query);
+    console.log('this.state.query: ', this.state.query);         
 
     if (prevState.page !== page && page !== 1) {
       this.setState({ loading: true });
-      const res = await getImages(query, page);
+      const res = await getImagesApi(query, page);
       console.log(res);
 
       this.setState(({ images }) => ({
@@ -45,7 +53,7 @@ export class App extends Component {
       setTimeout(() => this.scroll(), 1);
     }
 
-    if (page >= totalPages && images !== prevState.images) {
+    if (page >= totalPages && images !== prevState.images && images === [] ) {
       toast.warning(
         "We're sorry, but you've reached the end of search results."
       );
@@ -60,18 +68,20 @@ export class App extends Component {
 
     if (value === '') {
       toast.success('Please, enter another search value!');
+      this.setState({ images: [] });
       return;
     }
 
     this.setState({ loading: true });
-    const res = await getImages(value, page);
+    const res = await getImagesApi(value, page);
     console.log(res);
     this.setState({ loading: false });
 
     if (res.hits.length === 0) {
       toast.success(
         'Sorry, there are no images matching your search query. Please try again.'
-      )      
+      );
+      this.setState({ images: [] });
       return;
     }
 
@@ -87,7 +97,7 @@ export class App extends Component {
 
   loadMore = () => {
     this.setState(prevState => ({
-      page: prevState.page + 1,
+      page: prevState.page + 1,      
     }));
   };
 
@@ -97,9 +107,7 @@ export class App extends Component {
       top: clientHeight - 180,
       behavior: 'smooth',
     });
-  };
-
- 
+  }; 
 
   // selectImg = (imgUrl, altTag) => {
   //   this.setState({ selectedImg: imgUrl, modalImgAlt: altTag });
@@ -114,31 +122,26 @@ export class App extends Component {
 
   render() {
     const { images, loading, totalPages, page } = this.state;
-    // const { images } = this.state;
-    const isNotEmpty = images.length !== 0;
-    const isNotEndList = page < totalPages;
+    const checkEndList = page < totalPages;
+    const checkGalleryImg = images.length !== 0;
+    
 
     return (
-      <>
+      <Container>
         <Searchbar onSubmit={this.onSubmit} />
-        {isNotEmpty && <ImageGallery
+        {checkGalleryImg && <ImageGallery
               images={images}
               // onSelect={this.selectImg}
         ></ImageGallery> } 
         {loading ? (
           <Loader />
         ) : (
-          isNotEmpty && isNotEndList && <Button onClick={this.loadMore} />
+          checkGalleryImg && checkEndList && <Button onClick={this.loadMore} />
         )}
-        <ToastContainer autoClose={2000} position="top-left" theme="light" />
-      </>
+        <ToastContainer autoClose={2000} position="top-center" theme="light" />
+      </Container>
     )
   }
-
-
-  
-
-
 }
   
 
