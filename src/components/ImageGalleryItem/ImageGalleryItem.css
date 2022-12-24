@@ -1,4 +1,5 @@
 .photo-card {
+  position: relative;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
       rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
     border-radius: 5px;
@@ -24,3 +25,28 @@
     height: 100%;
     transition: scale 300ms linear;
   }
+.info {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-bottom: 1px solid #212121;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+
+  color: #fafafa;
+  background-color: rgba(93, 93, 93, 0.618);
+  /* z-index: 100; */ /* хм, интересно)) перебил портал и вылез вперед)) */
+}
+.info__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  margin: 0;
+}

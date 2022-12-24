@@ -1,4 +1,9 @@
 import './ImageGalleryItem.css';
+import { FcLike } from "react-icons/fc";
+import { ImEye } from "react-icons/im";
+import { FaComments } from "react-icons/fa";
+import { MdOutlineFileDownload } from "react-icons/md";
+
 import PropTypes from 'prop-types';
 
 export const ImageGalleryItem = ({ images }) => {
@@ -12,6 +17,28 @@ export const ImageGalleryItem = ({ images }) => {
           loading="lazy"
           />
         </a>
+        <div className='info'>
+            <p className='info__item'>
+              <b>Likes</b>
+              <FcLike style={{ width: 14, height: 14 }} />              
+              {image.likes}
+            </p>
+            <p className='info__item'>
+              <b>Views</b>
+              <ImEye style={{ width: 14, height: 14, color: "lightgreen"}} />              
+              {image.views}
+            </p>
+            <p className='info__item'>
+              <b>Comments</b>
+              <FaComments style={{ width: 14, height: 14, color: "lightblue"}} />              
+              {image.comments}
+            </p>
+            <p className='info__item'>
+              <b>Downloads</b>
+              <MdOutlineFileDownload style={{ width: 14, height: 14, color: "yellow"}} />              
+              {image.downloads}
+            </p>
+          </div>
       </li>  
   ));
 };
